@@ -41,10 +41,24 @@
         <div class="todos">
           <template v-if="todos.length">
             <ul class="todos__list">
-              <li v-for="todo in todos" :key="todo.id">
+              <li v-for="todo in todos" 
+               :key="todo.id"
+               :class="todo.completed ? 'is-completed' : ''"
+              >
                 <div class="todos__inner">
                   <div class="todos__completed">
-                    <button class="todos__completed__btn" type="button">未完了</button>
+                    <button 
+                    class="todos__completed__btn" 
+                    type="button"
+                    @click="changeCompleted(todo)"
+                    >
+                    <template v-if="todo.completed">
+                      <span>完了</span>
+                    </template>
+                    <template v-else>
+                      <span>未完了</span>
+                    </template>
+                  </button>
                   </div>
                   <div class="todos__desc">
                     <h2 class="todos__desc__title">{{ todo.title }}</h2>
@@ -120,6 +134,18 @@ export default {
           this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
         }
       });
+    },
+    changeCompleted(todo){
+      const targetTodo = Object.assign({},todo);
+      axios.patch(`http://localhost:3000/api/todos/${targetTodo.id}`, {
+        completed: !targetTodo.completed,
+      }).then(({ data }) =>{
+        this.todos = this.todos.map((todoItem) =>{
+          if (todoItem.id === targetTodo.id) return data;
+          return todoItem;
+        });
+      });
+      console.log(todo.completed);
     },
   },
 }
