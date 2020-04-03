@@ -6,10 +6,11 @@
       </header>
 
       <main class="main">
-        <form class="register">
+        <form class="register" @submit.prevent="addTodo">
           <div class="register__input">
             <p class="register__input__title">やることのタイトル</p>
             <input
+              v-model="targetTodo.title"
               type="text"
               name="title"
               placeholder="ここにTODOのタイトルを記入してください"
@@ -18,6 +19,7 @@
           <div class="register__input">
             <p class="register__input__title">やることの内容</p>
             <textarea
+              v-model="targetTodo.detail"
               name="detail"
               rows="3"
               placeholder="ここにTODOの内容を記入してください。改行は半角スペースに変換されます。"
@@ -29,6 +31,10 @@
             </button>
           </div>
         </form>
+
+        <div v-if="errorMessage" class="error">
+          <p class="error__text">{{ errorMessage }}</p>
+        </div>
         
         <div class="todos">
           <template v-if="todos.length">
@@ -73,26 +79,40 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      todos: [
-        // {
-        //   id: 1,
-        //   title: 'タイトル 01',
-        //   detail: '詳細 01',
-        //   completed: false,
-        // },
-        // {
-        //   id:2,
-        //   title: 'タイトル　02',
-        //   detail: '詳細　02',
-        //   completed: false,
-        // },
-      ],
+      todos: [],
+      targetTodo: {
+        id: null,
+        title: '',
+        detail: '',
+        completed: false,
+    },
+    errorMessage: '',
     };
   },
-  // created() {
-  //   axios.get('http://localhost:3000/api/todos/').then(({ data }) => {
-  //   console.log(data);
-  // });
+  created() {
+    axios.get('http://localhost:3000/api/todos/').then(({ data }) => {
+    this.todos = data.todos.reverse();
+    console.log(data);
+  }).catch((err) => {
+    if (err.response) {
+      this.errorMessage = err.response.data.message;
+    } else {
+      this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
+    }
+  });
+  },
+  methods: {
+    addTodo() {
+      const postTodo = Object.assign({}, {
+        title: this.targetTodo.title,
+        detail: this.targetTodo.detail,
+      });
+      axios.post('http://localhost:3000/api/todos/', postTodo).then(({ data }) => {
+        this.todos.unshift(data);
+        this.targetTodo = Object.assign({}, this.targetTodo, { title: '', detail: '' });
+      });
+    },
+  },
 }
 </script>
 
