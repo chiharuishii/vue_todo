@@ -29,25 +29,31 @@
             </button>
           </div>
         </form>
-
+        
         <div class="todos">
-          <ul class="todos__list">
-            <li>
-              <div class="todos__inner">
-                <div class="todos__completed">
-                  <button class="todos__completed__btn" type="button">未完了</button>
+          <template v-if="todos.length">
+            <ul class="todos__list">
+              <li v-for="todo in todos" :key="todo.id">
+                <div class="todos__inner">
+                  <div class="todos__completed">
+                    <button class="todos__completed__btn" type="button">未完了</button>
+                  </div>
+                  <div class="todos__desc">
+                    <h2 class="todos__desc__title">{{ todo.title }}</h2>
+                    <p class="todos__desc__detail">{{ todo.detail }}</p>
+                  </div>
+                  <div class="todos__btn">
+                    <button class="todos__btn__edit" type="button">編集</button>
+                    <button class="todos__btn__delete" type="button">削除</button>
+                  </div>
                 </div>
-                <div class="todos__desc">
-                  <h2 class="todos__desc__title">ここにはTodoのタイトルが入ります</h2>
-                  <p class="todos__desc__detail">ここにはTodoの内容が入ります</p>
-                </div>
-                <div class="todos__btn">
-                  <button class="todos__btn__edit" type="button">編集</button>
-                  <button class="todos__btn__delete" type="button">削除</button>
-                </div>
-              </div>
-            </li>
-          </ul>
+              </li>
+            </ul>
+          </template>
+
+          <template　v-else>
+            <p class="todos__empty">やることリストにはなにも登録されていません。</p>
+          </template>
         </div>
       </main>
 
@@ -61,6 +67,9 @@
 </template>
 
 <script>
+  
+import axios from 'axios';
+
 export default {
   data() {
     return {
@@ -71,10 +80,20 @@ export default {
         //   detail: '詳細 01',
         //   completed: false,
         // },
+        // {
+        //   id:2,
+        //   title: 'タイトル　02',
+        //   detail: '詳細　02',
+        //   completed: false,
+        // },
       ],
     };
   },
-};
+  // created() {
+  //   axios.get('http://localhost:3000/api/todos/').then(({ data }) => {
+  //   console.log(data);
+  // });
+}
 </script>
 
 <style lang="scss" scoped>
