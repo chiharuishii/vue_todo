@@ -14,6 +14,7 @@
               type="text"
               name="title"
               placeholder="ここにTODOのタイトルを記入してください"
+              required
             >
           </div>
           <div class="register__input">
@@ -23,6 +24,7 @@
               name="detail"
               rows="3"
               placeholder="ここにTODOの内容を記入してください。改行は半角スペースに変換されます。"
+              required
             />
           </div>
           <div class="register__submit">
@@ -110,6 +112,13 @@ export default {
       axios.post('http://localhost:3000/api/todos/', postTodo).then(({ data }) => {
         this.todos.unshift(data);
         this.targetTodo = Object.assign({}, this.targetTodo, { title: '', detail: '' });
+        this.errorMessage = '';
+      }).catch((err) => {
+        if (err.response) {
+          this.errorMessage = err.response.data.message;
+        } else {
+          this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
+        }
       });
     },
   },
