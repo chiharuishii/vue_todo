@@ -8,8 +8,8 @@
       <main class="main">
         <form 
         class="register"
-         @submit.prevent="targetTodo.id ? editTodo() :addTodo"
-         >
+         @submit.prevent="targetTodo.id ? editTodo() :addTodo()"
+        >
           <div class="register__input">
             <p class="register__input__title">やることのタイトル</p>
             <input
@@ -130,14 +130,16 @@ export default {
     this.todos = data.todos.reverse();
     console.log(data);
   }).catch((err) => {
-    if (err.response) {
-      this.errorMessage = err.response.data.message;
-    } else {
-      this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
-    }
+      this.showError(err);
   });
   },
   methods: {
+    hideError() {
+      this.errorMessage = '';
+    },
+    showError(err) {
+      this.showError(err);
+    },
     addTodo() {
       const postTodo = Object.assign({}, {
         title: this.targetTodo.title,
@@ -146,13 +148,9 @@ export default {
       axios.post('http://localhost:3000/api/todos/', postTodo).then(({ data }) => {
         this.todos.unshift(data);
         this.targetTodo = Object.assign({}, this.targetTodo, { title: '', detail: '' });
-        this.errorMessage = '';
+        this.hideError();
       }).catch((err) => {
-        if (err.response) {
-          this.errorMessage = err.response.data.message;
-        } else {
-          this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
-        }
+          this.showError(err);
       });
     },
     changeCompleted(id){
@@ -170,13 +168,9 @@ export default {
           if (todoItem.id === targetTodo.id) return data;
           return todoItem;
         });
-        this.errorMessage = '';
+        this.hideError();
       }).catch((err) => {
-        if (err.response) {
-          this.errorMessage = err.response.data.message;
-        } else {
-          this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
-        }
+          this.showError(err);
       });
     },
     showEditor(todo) {
@@ -211,13 +205,9 @@ export default {
           detail: '',
           completed: false,
         };
-        this.errorMessage = '';
+        this.hideError();
       }).catch((err) => {
-        if (err.response) {
-          this.errorMessage = err.response.data.message;
-        } else {
-          this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
-        }
+          this.showError(err);
       });
     },
     deleteTodo(id){
@@ -230,13 +220,9 @@ export default {
       console.log(id);
       axios.delete(`http://localhost:3000/api/todos/${id}`).then(({ data }) => {
         this.todos = data.todos.reverse();
-        this.errorMessage = '';
+        this.hideError();
       }).catch((err) => {
-        if (err.response) {
-        this.errorMessage = err.response.data.message;
-        } else {
-          this.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
-        }
+          this.showError(err);
       });
     },
     
