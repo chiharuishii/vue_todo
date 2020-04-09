@@ -55,7 +55,7 @@ const store = new Vuex.Store({
       if (payload) {
         // const errorMessage = payload.data;
         state.errorMessage = payload.data;
-        console.log(payload);
+        // console.log(payload);
       } else {
         state.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
       }
@@ -68,11 +68,11 @@ const store = new Vuex.Store({
     },
     addTodo(state, payload) {
       state.todos.unshift(payload);
-      console.log(payload);
+      // console.log(payload);
     },
     deleteTodo(state,payload) {
-      state.todos = payload.reverse();
-      console.log(payload);
+      state.todos = payload.todos;
+      // console.log(payload);
     },
     showEditor(state, payload) {
       state.targetTodo = Object.assign({}, payload);
@@ -82,7 +82,7 @@ const store = new Vuex.Store({
         if (todoItem.id === payload.id) return payload;
         return todoItem;
       });
-      console.log(payload);
+      // console.log(payload);
     },
   },
   actions: {
@@ -159,8 +159,11 @@ const store = new Vuex.Store({
     },
     deleteTodo({ commit }, todoId) {
       axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
+        // console.log(data);
         commit('deleteTodo', data);
         // commit('hideError');
+        commit('hideError');
+
       }).catch((err) => {
         commit('showError', err.response);
       });
