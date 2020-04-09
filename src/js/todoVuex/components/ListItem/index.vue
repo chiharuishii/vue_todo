@@ -18,6 +18,7 @@
       <div class="todo__item__desc">
         <h2 class="todo__item__desc__title">{{ todo.title }}</h2>
         <p class="todo__item__desc__detail">{{ todo.detail }}</p>
+        <p class="todo__item__desc__detail">{{ todo.id }}</p>
       </div>
 
       <div class="todo__item__btn">
@@ -31,6 +32,7 @@
         <button
           class="todo__item__btn__delete"
           type="button"
+          @click="deleteTodo(todo)"
         >
           削除
         </button>
@@ -56,6 +58,9 @@ export default {
     showEditor: function(todo) {
       this.$store.dispatch('showEditor', todo);
     },
+    deleteTodo: function(todo) {
+      this.$store.dispatch('deleteTodo', todo.id);
+    }
   },
 };
 </script>

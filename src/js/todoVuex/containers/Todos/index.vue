@@ -1,9 +1,17 @@
 <template lang="html">
   <app-wrapper>
-    <app-register v-if="todoFilter !== 'completedTodos'" />
-    <app-error-message />
+    <app-navi/>
+    <app-register 
+      v-if="todoFilter !== 'completedTodos'"/>
+    <app-error-message
+      v-if="errorMessage"
+      :error-message="errorMessage"
+    />
     <template v-slot:todos>
-      <app-list v-if="todos.length" :todos="todos" />
+      <app-list 
+      v-if="todos.length" 
+      :todos="todos"
+      />
       <app-empty-message />
     </template>
   </app-wrapper>
@@ -25,6 +33,21 @@ export default {
     appRegister: Register,
     appNavi: Navi,
   },
+  // data() {
+  //   // return{
+  //   //   todos: [],
+  //   //   todoFilter: '',
+  //   //   filteredTodos: [],
+  //   //   targetTodo: {
+  //   //     id: null,
+  //   //     title: '',
+  //   //     detail: '',
+  //   //     completed: '',
+  //   //   },
+  //   //   errorMessage: '',
+  //   //   emptyMessage: '',
+  //   // }
+  // },
   computed: {
     todoFilter: function() {
       return this.$store.state.todoFilter;
@@ -38,6 +61,9 @@ export default {
     errorMessage: function() {
       return this.$store.state.errorMessage;
     },
+    // deleteTodo: function() {
+    //   return this.$store.state.
+    // }
   },
   watch: {
     todos: function(todos) {
