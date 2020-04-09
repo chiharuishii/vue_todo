@@ -25,19 +25,21 @@ const store = new Vuex.Store({
     incompleteTodos: (state) => state.todos.filter((todo) => !todo.completed),
     completedTodosLength: (state, getters) => getters.completedTodos.length,
     incompleteTodosLength: (state, getters) => getters.incompleteTodos.length,
+
+    // todosLength: (state) => state.todos.length,
   },
   mutations: {
     setTodoFilter(state, routeName) {
       state.todoFilter = routeName;
     },
     setEmptyMessage(state, routeName) {
-      if (routeName === 'completedTodos') {
-        let emptyMessage = '完了済みのやることリストはありません。';
-      } else if (routeName === 'incompleteTodos') {
-        let emptyMessage = '未完了のやることリストはありません。';
-      } else {
-        let emptyMessage = 'やることリストには何も登録されていません。';
-      }
+        if (routeName === 'completedTodos') {
+          state.emptyMessage = '完了済みのやることリストはありません。';
+        } else if (routeName === 'incompleteTodos' ) {
+          state.emptyMessage = '未完了のやることリストはありません。';
+        } else {
+          state.emptyMessage ='やることリストには何も登録されていません。';
+        }
     },
     initTargetTodo(state) {
       state.targetTodo = {
@@ -72,7 +74,7 @@ const store = new Vuex.Store({
     },
     deleteTodo(state,payload) {
       state.todos = payload.todos;
-      // console.log(payload);
+      console.log(payload);
     },
     showEditor(state, payload) {
       state.targetTodo = Object.assign({}, payload);
@@ -90,7 +92,10 @@ const store = new Vuex.Store({
       commit('setTodoFilter', routeName);
     },
     setEmptyMessage({ commit }, routeName) {
-      commit('setEmptyMessage', routeName);
+      // if (!state.todos.length) {
+        commit('setEmptyMessage', routeName);
+        // console.log(state.todos.length);
+        // return;
     },
     updateTargetTodo({ commit }, { name, value }) {
       commit('updateTargetTodo', { name, value });
@@ -159,11 +164,9 @@ const store = new Vuex.Store({
     },
     deleteTodo({ commit }, todoId) {
       axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
-        // console.log(data);
+        console.log(data);
         commit('deleteTodo', data);
-        // commit('hideError');
         commit('hideError');
-
       }).catch((err) => {
         commit('showError', err.response);
       });

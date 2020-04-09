@@ -12,7 +12,10 @@
       v-if="todos.length" 
       :todos="todos"
       />
-      <app-empty-message />
+      <app-empty-message 
+      v-if="!todos.length"
+      :empty-message="emptyMessage"
+      />
     </template>
   </app-wrapper>
 </template>
@@ -33,21 +36,6 @@ export default {
     appRegister: Register,
     appNavi: Navi,
   },
-  // data() {
-  //   // return{
-  //   //   todos: [],
-  //   //   todoFilter: '',
-  //   //   filteredTodos: [],
-  //   //   targetTodo: {
-  //   //     id: null,
-  //   //     title: '',
-  //   //     detail: '',
-  //   //     completed: '',
-  //   //   },
-  //   //   errorMessage: '',
-  //   //   emptyMessage: '',
-  //   // }
-  // },
   computed: {
     todoFilter: function() {
       return this.$store.state.todoFilter;
@@ -61,9 +49,10 @@ export default {
     errorMessage: function() {
       return this.$store.state.errorMessage;
     },
-    // deleteTodo: function() {
-    //   return this.$store.state.
-    // }
+    emptyMessage: function() {
+      return this.$store.state.emptyMessage;
+    },
+
   },
   watch: {
     todos: function(todos) {
