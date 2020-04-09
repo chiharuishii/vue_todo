@@ -49,11 +49,11 @@ const store = new Vuex.Store({
     },
     hideError(state) {
       // state.errorMessage = 'エラーが起きました。';
-      state.errorMessage = 'エラーが起きました。';
+      state.errorMessage = '';
     },
     showError(state, payload) {
       if (payload) {
-        const errorMessage = payload.data;
+        // const errorMessage = payload.data;
         state.errorMessage = payload.data;
         console.log(payload);
       } else {
@@ -116,6 +116,7 @@ const store = new Vuex.Store({
       });
       axios.post('http://localhost:3000/api/todos/', postTodo).then(({ data }) => {
         commit('addTodo', data);
+        commit('hideError');
       }).catch((err) => {
         commit('showError', err.response);
       });
@@ -127,6 +128,7 @@ const store = new Vuex.Store({
         completed: !targetTodo.completed,
       }).then(({ data }) => {
         commit('editTodo', data);
+        commit('hideError');
       }).catch((err) => {
         commit('showError', err.response);
       });
@@ -149,15 +151,16 @@ const store = new Vuex.Store({
         detail: state.targetTodo.detail,
       }).then(({ data }) => {
         commit('editTodo', data);
+        commit('hideError');
       }).catch((err) => {
         commit('showError', err.response);
       });
       commit('initTargetTodo');
     },
     deleteTodo({ commit }, todoId) {
-      
       axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
         commit('deleteTodo', data);
+        // commit('hideError');
       }).catch((err) => {
         commit('showError', err.response);
       });
