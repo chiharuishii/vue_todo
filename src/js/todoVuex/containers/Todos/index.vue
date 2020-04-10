@@ -13,8 +13,7 @@
       :todos="todos"
       />
       <app-empty-message 
-      v-if="!todos.length"
-      :empty-message="emptyMessage"
+      v-else
       />
     </template>
   </app-wrapper>
@@ -49,9 +48,9 @@ export default {
     errorMessage: function() {
       return this.$store.state.errorMessage;
     },
-    emptyMessage: function() {
-      return this.$store.state.emptyMessage;
-    },
+    // emptyMessage: function() {
+    //   return this.$store.state.emptyMessage;
+    // },
 
   },
   watch: {

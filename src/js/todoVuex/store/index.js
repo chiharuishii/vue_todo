@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import { rejects } from 'assert';
 
 Vue.use(Vuex);
 
@@ -74,7 +75,7 @@ const store = new Vuex.Store({
     },
     deleteTodo(state,payload) {
       state.todos = payload.todos;
-      console.log(payload);
+      // console.log(payload);
     },
     showEditor(state, payload) {
       state.targetTodo = Object.assign({}, payload);
@@ -162,16 +163,63 @@ const store = new Vuex.Store({
       });
       commit('initTargetTodo');
     },
-    deleteTodo({ commit }, todoId) {
-      axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
-        console.log(data);
-        commit('deleteTodo', data);
-        commit('hideError');
-      }).catch((err) => {
-        commit('showError', err.response);
-      });
-      commit('initTargetTodo');
+    // deleteTodo({ commit }, todoId) {
+    //   axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
+    //     commit('deleteTodo', data);
+    //     commit('hideError');
+    //   }).catch((err) => {
+    //     commit('showError', err.response);
+    //   });
+    // },
+
+    deleteTodo({ commit },todoId) {
+      // return new Promise(function(resolve, reject) {
+        axios
+            .delete(`http://localhost:3000/api/todos/${todoId}`)
+            .then(({ data }) => {
+              commit('deleteTodo', data);
+              commit('hideError');
+            })
+            .catch(error => commit('showError', err.response))
+      // });
     },
+
+
+
+    // async deleteTodo({ commit }, todoId) {
+    //   await axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
+    //     commit('deleteTodo', data);
+    //     commit('hideError');
+    //   }).catch((err) => {
+    //     commit('showError', err.response);
+    //   });
+    // },
+
+    // deleteTodo({ commit }, todoId) {
+    //   return new Promise((resolve, reject) => {
+    //     axios.delete(`http://localhost:3000/api/todos/${todoId}`,(err,{data}) => {
+    //       if (err) {
+    //         reject(err);
+    //         return;
+    //       }
+    //       resolve(data);
+    //     });
+    //   });
+    // },
+
+    // deleteResolve = (data) => {
+    //   commit('deleteTodo', data);
+    //   commit('hideError');
+    // },
+    // deleteReject = (err) => {
+    //   commit('showError', err.response);
+    // },
+
+
+    // deleteTodo({ commit },data)
+    //   .then(deleteResolve,deleteReject);
+    
+
   },
 });
 
