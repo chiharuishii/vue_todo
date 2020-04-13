@@ -1,18 +1,18 @@
 <template lang="html">
   <app-wrapper>
     <app-navi/>
-    <app-register 
+    <app-register
       v-if="todoFilter !== 'completedTodos'"/>
     <app-error-message
       v-if="errorMessage"
       :error-message="errorMessage"
     />
     <template v-slot:todos>
-      <app-list 
-      v-if="todos.length" 
+      <app-list
+      v-if="todos.length"
       :todos="todos"
       />
-      <app-empty-message 
+      <app-empty-message
       v-else
       />
     </template>
@@ -36,16 +36,16 @@ export default {
     appNavi: Navi,
   },
   computed: {
-    todoFilter: function() {
+    todoFilter() {
       return this.$store.state.todoFilter;
     },
-    todos: function() {
+    todos() {
       if (this.todoFilter === 'allTodos') {
         return this.$store.state.todos;
       }
       return this.$store.getters[this.todoFilter];
     },
-    errorMessage: function() {
+    errorMessage() {
       return this.$store.state.errorMessage;
     },
     // emptyMessage: function() {
@@ -54,14 +54,14 @@ export default {
 
   },
   watch: {
-    todos: function(todos) {
+    todos(todos) {
       if (!todos.length) this.$store.dispatch('setEmptyMessage', this.todoFilter);
     },
-    $route: function(to) {
+    $route(to) {
       this.$store.dispatch('setTodoFilter', to.name);
     },
   },
-  created: function() {
+  created() {
     this.$store.dispatch('getTodos');
     this.$store.dispatch('setTodoFilter', this.$route.name);
   },

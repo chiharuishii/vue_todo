@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
-import { rejects } from 'assert';
+// import { rejects } from 'assert';
 
 Vue.use(Vuex);
 
@@ -16,31 +16,27 @@ const store = new Vuex.Store({
       detail: '',
       completed: '',
     },
-    // errorMessage: 'エラーが起きました。',
-    // emptyMessage: 'やることリストは空です。',
     errorMessage: '',
     emptyMessage: '',
   },
   getters: {
-    completedTodos: (state) => state.todos.filter((todo) => todo.completed),
-    incompleteTodos: (state) => state.todos.filter((todo) => !todo.completed),
+    completedTodos: state => state.todos.filter(todo => todo.completed),
+    incompleteTodos: state => state.todos.filter(todo => !todo.completed),
     completedTodosLength: (state, getters) => getters.completedTodos.length,
     incompleteTodosLength: (state, getters) => getters.incompleteTodos.length,
-
-    // todosLength: (state) => state.todos.length,
   },
   mutations: {
     setTodoFilter(state, routeName) {
       state.todoFilter = routeName;
     },
     setEmptyMessage(state, routeName) {
-        if (routeName === 'completedTodos') {
-          state.emptyMessage = '完了済みのやることリストはありません。';
-        } else if (routeName === 'incompleteTodos' ) {
-          state.emptyMessage = '未完了のやることリストはありません。';
-        } else {
-          state.emptyMessage ='やることリストには何も登録されていません。';
-        }
+      if (routeName === 'completedTodos') {
+        state.emptyMessage = '完了済みのやることリストはありません。';
+      } else if (routeName === 'incompleteTodos') {
+        state.emptyMessage = '未完了のやることリストはありません。';
+      } else {
+        state.emptyMessage = 'やることリストには何も登録されていません。';
+      }
     },
     initTargetTodo(state) {
       state.targetTodo = {
@@ -51,14 +47,11 @@ const store = new Vuex.Store({
       };
     },
     hideError(state) {
-      // state.errorMessage = 'エラーが起きました。';
       state.errorMessage = '';
     },
     showError(state, payload) {
       if (payload) {
-        // const errorMessage = payload.data;
         state.errorMessage = payload.data;
-        // console.log(payload);
       } else {
         state.errorMessage = 'ネットに接続がされていない、もしくはサーバーとの接続がされていません。ご確認ください。';
       }
@@ -71,11 +64,9 @@ const store = new Vuex.Store({
     },
     addTodo(state, payload) {
       state.todos.unshift(payload);
-      // console.log(payload);
     },
-    deleteTodo(state,payload) {
+    deleteTodo(state, payload) {
       state.todos = payload.todos;
-      // console.log(payload);
     },
     showEditor(state, payload) {
       state.targetTodo = Object.assign({}, payload);
@@ -85,7 +76,6 @@ const store = new Vuex.Store({
         if (todoItem.id === payload.id) return payload;
         return todoItem;
       });
-      // console.log(payload);
     },
   },
   actions: {
@@ -93,10 +83,7 @@ const store = new Vuex.Store({
       commit('setTodoFilter', routeName);
     },
     setEmptyMessage({ commit }, routeName) {
-      // if (!state.todos.length) {
-        commit('setEmptyMessage', routeName);
-        // console.log(state.todos.length);
-        // return;
+      commit('setEmptyMessage', routeName);
     },
     updateTargetTodo({ commit }, { name, value }) {
       commit('updateTargetTodo', { name, value });
@@ -163,63 +150,19 @@ const store = new Vuex.Store({
       });
       commit('initTargetTodo');
     },
-    // deleteTodo({ commit }, todoId) {
-    //   axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
-    //     commit('deleteTodo', data);
-    //     commit('hideError');
-    //   }).catch((err) => {
-    //     commit('showError', err.response);
-    //   });
-    // },
 
-    deleteTodo({ commit },todoId) {
-      // return new Promise(function(resolve, reject) {
+    deleteTodo({ commit }, todoId) {
+      return new Promise(((resolve) => {
         axios
-            .delete(`http://localhost:3000/api/todos/${todoId}`)
-            .then(({ data }) => {
-              commit('deleteTodo', data);
-              commit('hideError');
-            })
-            .catch(error => commit('showError', err.response))
-      // });
+          .delete(`http://localhost:3000/api/todos/${todoId}`)
+          // .then(({ data }) => {
+          .then(() => {
+            commit('hideError');
+            resolve();
+          }).catch(error => commit('showError', err.response));
+          // }).catch(error => commit('showError', response));
+      }));
     },
-
-
-
-    // async deleteTodo({ commit }, todoId) {
-    //   await axios.delete(`http://localhost:3000/api/todos/${todoId}`).then(({ data }) => {
-    //     commit('deleteTodo', data);
-    //     commit('hideError');
-    //   }).catch((err) => {
-    //     commit('showError', err.response);
-    //   });
-    // },
-
-    // deleteTodo({ commit }, todoId) {
-    //   return new Promise((resolve, reject) => {
-    //     axios.delete(`http://localhost:3000/api/todos/${todoId}`,(err,{data}) => {
-    //       if (err) {
-    //         reject(err);
-    //         return;
-    //       }
-    //       resolve(data);
-    //     });
-    //   });
-    // },
-
-    // deleteResolve = (data) => {
-    //   commit('deleteTodo', data);
-    //   commit('hideError');
-    // },
-    // deleteReject = (err) => {
-    //   commit('showError', err.response);
-    // },
-
-
-    // deleteTodo({ commit },data)
-    //   .then(deleteResolve,deleteReject);
-    
-
   },
 });
 
